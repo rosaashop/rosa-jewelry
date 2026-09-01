@@ -38,7 +38,7 @@ public/        index.html(?v= کش‌باست) · css/app.css · js/{i18n,api,ui
 1. ساختار: `public/` + `worker.js` + `wrangler.toml` (+اختیاری functions/, seed.js)
 2. `git init -b main && git add -A && git commit` → push به ریپوی گیتهاب
 3. کلودفلر: Workers & Pages → Create → **Import a repository** (نه آپلود zip — zip بدون Functions است!)
-4. KV: Add namespace → داخل پروژه تب **Bindings** → Add binding → نوع KV → Variable name هم‌نام با کد → Save
+4. KV: Add namespace → آیدی آن را در `wrangler.toml` بگذار (`[[kv_namespaces]]`) تا با هر دیپلوی همراه باشد (binding فقط از داشبورد، در دیپلوی بعدی می‌پرد!)
 5. دامنه اختصاصی: Settings → Domains
 **آپدیت:** ویرایش → commit → push = دیپلوی خودکار.
 
