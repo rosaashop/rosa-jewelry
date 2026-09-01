@@ -1,0 +1,5 @@
+name = "rosa-jewelry"
+main = "worker.js"
+compatibility_date = "2025-05-01"
+
+assets = { directory = "public", binding = "ASSETS" }
