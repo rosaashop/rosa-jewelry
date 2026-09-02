@@ -157,9 +157,9 @@ function make() {
   ];
 
   const sliders = [
-    { id: 'sl1', image: '/assets/img/sliders/sl1.jpg', title: { fa: 'کالکشن جدید مروارید', en: 'The New Pearl Edit' }, subtitle: { fa: 'ظرافتی که هر روز می‌درخشد', en: 'Quiet elegance, every day' }, link: '#/shop?filter=new', order: 1, active: true },
-    { id: 'sl2', image: '/assets/img/sliders/sl2.jpg', title: { fa: 'تا ۲۰٪ تخفیف ویژه', en: 'Up to 20% Off' }, subtitle: { fa: 'جشنواره پاییزه؛ انتخاب‌های محبوب', en: 'Autumn edit, kinder prices' }, link: '#/shop?filter=sale', order: 2, active: true },
-    { id: 'sl3', image: '/assets/img/sliders/sl3.jpg', title: { fa: 'امضای روزا', en: 'The ROSA Signature' }, subtitle: { fa: 'ضمانت کیفیت و ارسال سریع سراسری', en: 'Quality guarantee, fast shipping' }, link: '#/about', order: 3, active: true }
+    { id: 'sl1', image: '/assets/img/sliders/b1.jpg', title: { fa: 'کالکشن جدید مروارید', en: 'The New Pearl Edit' }, subtitle: { fa: 'ظرافتی که هر روز می‌درخشد', en: 'Quiet elegance, every day' }, link: '#/shop?filter=new', order: 1, active: true },
+    { id: 'sl2', image: '/assets/img/sliders/b2.jpg', title: { fa: 'تا ۲۰٪ تخفیف ویژه', en: 'Up to 20% Off' }, subtitle: { fa: 'جشنواره پاییزه؛ انتخاب‌های محبوب', en: 'Autumn edit, kinder prices' }, link: '#/shop?filter=sale', order: 2, active: true },
+    { id: 'sl3', image: '/assets/img/sliders/b3.jpg', title: { fa: 'امضای روزا', en: 'The ROSA Signature' }, subtitle: { fa: 'ضمانت کیفیت و ارسال سریع سراسری', en: 'Quality guarantee, fast shipping' }, link: '#/about', order: 3, active: true }
   ];
 
   const faqs = [

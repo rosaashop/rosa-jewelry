@@ -91,8 +91,8 @@ html[dir="rtl"] .mnav .panel { transform: translateX(100%); }
 .hero .slide.on { opacity: 1; pointer-events: auto; }
 .hero .txt { padding: 14px 28px; }
 .hero .txt .eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .16em; color: var(--accent-dk); text-transform: uppercase; margin-bottom: 4px; }
-.hero .txt h1 { font-size: clamp(15px, 1.7vw, 20px); font-weight: 800; line-height: 1.6; margin-bottom: 4px; }
-.hero .txt p { color: var(--muted); max-width: 42ch; margin-bottom: 10px; font-size: 11.5px; line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hero .txt h1 { font-size: clamp(16px, 1.8vw, 21px); font-weight: 800; line-height: 1.6; margin-bottom: 4px; }
+.hero .txt p { color: var(--muted); max-width: 42ch; margin-bottom: 10px; font-size: 12px; line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .hero .txt .btn { padding: 7px 16px; font-size: 11.5px; border-radius: 8px; }
 .hero .img { height: 100%; }
 .hero .img img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
