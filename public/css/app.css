@@ -349,6 +349,8 @@ html[dir="ltr"] #toast.show { transform: translateX(-50%) translateY(0); }
   .hicon { width: 34px; height: 34px; }
   .lang-sw { margin-inline: 2px; }
   .lang-sw button { padding: 4px 8px; }
+  .admin .side, .admin .main { min-width: 0; }
+  .tbl { display: block; overflow-x: auto; }
   .cart-line { grid-template-columns: 70px 1fr; grid-auto-rows: auto; }
   .cart-line .im { width: 70px; height: 70px; }
   footer.site .cols { grid-template-columns: 1fr; gap: 26px; }
