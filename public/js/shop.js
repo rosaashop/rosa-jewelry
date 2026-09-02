@@ -15,14 +15,14 @@ async function pageHome() {
   ]);
   S.cats = cats;
   return `
-  <div class="hero" id="hero">
+  <div class="container hero-wrap"><div class="hero" id="hero">
     ${sliders.map((s, i) => `<div class="slide ${i === 0 ? 'on' : ''}">
       <div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>
       <div class="img"><img src="${s.image}" alt="${esc(L(s.title))}"></div>
     </div>`).join('')}
     <div class="dots">${sliders.map((s, i) => `<button class="${i === 0 ? 'on' : ''}" onclick="slideGo(${i})"></button>`).join('')}</div>
     ${sliders.length > 1 ? `<button class="arr prev" onclick="slideGo(W.slide-1)">${IC.arrL}</button><button class="arr next" onclick="slideGo(W.slide+1)">${IC.arrR}</button>` : ''}
-  </div>
+  </div></div>
   <section class="blk"><div class="container">
     ${secHead(t('cats_eye'), t('cats_title'))}
     <div class="cats">${cats.map(c => `<a class="cat" href="#/category/${c.slug}"><div class="im"><img loading="lazy" src="${c.image}" alt="${esc(L(c.name))}"></div><b>${esc(L(c.name))}</b></a>`).join('')}</div>
