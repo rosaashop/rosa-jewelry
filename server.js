@@ -18,8 +18,17 @@ function readBody(req) { return new Promise((res, rej) => { let d = []; req.on('
 function userOf(req) { const h = req.headers.authorization || ''; const tk = h.replace('Bearer ', ''); const s = (db.sessions || []).find(s => s.token === tk); return s ? db.users.find(u => u.id === s.userId) || null : null; }
 function pushTL(o, t, note) { o.timeline.push({ t, date: now(), note: note || '' }); }
 
+function sitemapXML(d, origin) {
+  const urls = [{ loc: '/', pri: '1.0' }, { loc: '/#/shop', pri: '0.9' }, { loc: '/#/about', pri: '0.5' }, { loc: '/#/contact', pri: '0.4' }];
+  (d.categories || []).forEach(c => urls.push({ loc: '/#/category/' + c.slug, pri: '0.8' }));
+  (d.products || []).filter(p => p.status !== 'inactive').forEach(p => urls.push({ loc: '/#/product/' + p.slug, pri: '0.7' }));
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + urls.map(x => '<url><loc>' + origin + x.loc + '</loc><changefreq>weekly</changefreq><priority>' + x.pri + '</priority></url>').join('') + '</urlset>';
+}
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x'); const P = u.pathname; const M = req.method;
+  const origin = 'http://' + (req.headers.host || 'localhost');
+  if (P === '/robots.txt') { res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' }); return res.end('User-agent: *\nAllow: /\n\nSitemap: ' + origin + '/sitemap.xml\n'); }
+  if (P === '/sitemap.xml') { res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' }); return res.end(sitemapXML(db, origin)); }
   let b = null;
   try {
     if (P.startsWith('/api/')) {

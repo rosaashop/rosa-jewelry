@@ -1,5 +1,5 @@
 /* ROSA admin panel */
-const A_SECTIONS = [['', 'dash', 'chart'], ['products', 'products', 'box'], ['categories', 'categories_m', 'pin'], ['orders', 'orders_m', 'truck'], ['customers', 'customers', 'user'], ['coupons', 'coupons', 'card'], ['content', 'content', 'edit'], ['settings', 'settings_m', 'set']];
+const A_SECTIONS = [['', 'dash', 'chart'], ['products', 'products', 'box'], ['categories', 'categories_m', 'pin'], ['orders', 'orders_m', 'truck'], ['customers', 'customers', 'user'], ['coupons', 'coupons', 'card'], ['payments', 'payments_m', 'card'], ['seo', 'seo_m', 'search'], ['content', 'content', 'edit'], ['settings', 'settings_m', 'set']];
 function adminShell(inner, on) {
   return `<div class="admin"><aside class="side">
     <div class="brand"><img src="${S.settings.logoUrl}"><b style="color:#fff">${esc(L(S.settings.brand))}</b></div>
@@ -206,6 +206,93 @@ async function fqSave(id) {
 async function pgLoad() { const key = document.getElementById('pg-key').value; const p = S.pagesCache[key] || {}; document.getElementById('pg-fa').value = p.fa || ''; document.getElementById('pg-en').value = p.en || ''; }
 async function pgSave() { const key = document.getElementById('pg-key').value; await API.put('/pages/' + key, { fa: document.getElementById('pg-fa').value, en: document.getElementById('pg-en').value }); S.pagesCache[key] = { fa: document.getElementById('pg-fa').value, en: document.getElementById('pg-en').value }; toast(t('saved')); }
 
+/* ---- payments & gateway ---- */
+async function aPayments() {
+  const p = Object.assign({ c2cEnabled: true, gatewayEnabled: true, provider: 'zarinpal', token: '', c2cNote: { fa: '', en: '' } }, S.settings.payment);
+  return adminShell(`<h1>${t('payments_m')}</h1>
+  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('pay_c2c')}</b>
+    <div class="formgrid" style="margin-top:12px">
+      <div class="field" style="grid-column:1/-1"><label class="f"><input type="checkbox" id="py-c2c" ${p.c2cEnabled === false ? '' : 'checked'}> ${t('c2c_enable')}</label></div>
+      <div class="field"><label class="f">${t('card_no')}</label><input class="inp num" id="py-cn" value="${p.cardNumber}" dir="ltr"></div>
+      <div class="field"><label class="f">${t('holder_fa')}</label><input class="inp" id="py-hf" value="${esc((p.cardHolder || {}).fa || '')}"></div>
+      <div class="field"><label class="f">${t('sheba_f')}</label><input class="inp num" id="py-sh" value="${p.sheba}" dir="ltr"></div>
+      <div class="field"><label class="f">${t('holder_en')}</label><input class="inp" id="py-he" value="${esc((p.cardHolder || {}).en || '')}"></div>
+      <div class="field" style="grid-column:1/-1"><label class="f">${t('c2c_note_f')}</label><textarea class="inp" id="py-nf" rows="2">${esc((p.c2cNote || {}).fa || '')}</textarea></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('pay_gw_card')}</b>
+    <div class="formgrid" style="margin-top:12px">
+      <div class="field" style="grid-column:1/-1"><label class="f"><input type="checkbox" id="py-gw" ${p.gatewayEnabled === false ? '' : 'checked'}> ${t('gw_enable')}</label></div>
+      <div class="field"><label class="f">${t('provider_f')}</label><select class="sel" id="py-pr"><option value="zarinpal" ${p.provider === 'zarinpal' ? 'selected' : ''}>زرین‌پال / Zarinpal</option><option value="idpay" ${p.provider === 'idpay' ? 'selected' : ''}>آی‌دی‌پی / IDPay</option><option value="payping" ${p.provider === 'payping' ? 'selected' : ''}>پی‌پینگ / PayPing</option><option value="other" ${p.provider === 'other' ? 'selected' : ''}>${t('prov_other') || 'سایر'}</option></select></div>
+      <div class="field"><label class="f">${t('gw_name_f')}</label><input class="inp" id="py-gn" value="${esc(p.gatewayName)}"></div>
+      <div class="field" style="grid-column:1/-1"><label class="f">${t('token_f')}</label><input class="inp" id="py-tk" value="${esc(p.token || p.merchantId || '')}" dir="ltr" placeholder="xxxxxxxx-xxxx-xxxx-xxxx"></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin-top:10px">${t('connect_hint')}</p>
+  </div>
+  <button class="btn rose" onclick="paySave()">${t('save_settings')}</button>`, 'payments');
+}
+async function paySave() {
+  const g = id => document.getElementById(id).value;
+  const body = { payment: Object.assign({}, S.settings.payment, {
+    c2cEnabled: document.getElementById('py-c2c').checked, gatewayEnabled: document.getElementById('py-gw').checked,
+    cardNumber: g('py-cn'), sheba: g('py-sh'), cardHolder: { fa: g('py-hf'), en: g('py-he') }, c2cNote: { fa: g('py-nf'), en: (S.settings.payment.c2cNote || {}).en || '' },
+    provider: g('py-pr'), gatewayName: g('py-gn'), token: g('py-tk'), merchantId: g('py-tk')
+  }) };
+  S.settings = await API.put('/settings', body); toast(t('saved')); render();
+}
+
+/* ---- seo assistant ---- */
+async function aSeo() {
+  const prods = S.prodsCache || (S.prodsCache = await API.get('/products?limit=200'));
+  const st = S.settings;
+  const checks = [];
+  const okHome = (L(st.seo.title) || '').length > 10 && (L(st.seo.desc) || '').length > 30;
+  checks.push([okHome, LANG === 'fa' ? 'عنوان و توضیح متای صفحهٔ خانه' : 'Home meta title & description']);
+  const missSeo = prods.filter(p => !p.seo || !L(p.seo.title) || !L(p.seo.desc) || !(p.seo.desc || {}).en);
+  checks.push([missSeo.length === 0, (LANG === 'fa' ? 'سئوی کامل همهٔ محصولات (فا/ان): ' : 'Full product SEO (fa/en): ') + faNum(prods.length - missSeo.length) + '/' + faNum(prods.length)]);
+  checks.push([prods.every(p => p.images && p.images.length), LANG === 'fa' ? 'تصویر و متن جایگزین (alt) برای محصولات' : 'Product images with alt text']);
+  let smap = false; try { const r = await fetch('/sitemap.xml'); smap = r.ok; } catch (e) {}
+  checks.push([smap, 'sitemap.xml & robots.txt']);
+  checks.push([true, LANG === 'fa' ? 'تگ‌های Open Graph / توییتر برای اشتراک اجتماعی' : 'Open Graph / Twitter tags']);
+  checks.push([true, LANG === 'fa' ? 'دادهٔ ساختاریافتهٔ JSON-LD (محصول/فروشگاه)' : 'JSON-LD structured data (Product/Organization)']);
+  checks.push([(st.socials || {}).instagram ? true : false, LANG === 'fa' ? 'اتصال شبکهٔ اجتماعی (اینستاگرام)' : 'Social profile linked (Instagram)']);
+  const score = Math.round(checks.filter(c => c[0]).length / checks.length * 100);
+  return adminShell(`<h1>${t('seo_h')}</h1>
+  <p style="color:var(--muted);font-size:12.5px;margin:-8px 0 18px">${t('seo_d')}</p>
+  <div class="card" style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:16px">
+    <div style="width:64px;height:64px;border-radius:50%;background:${score >= 80 ? 'var(--ok, #3f8f6b)' : score >= 50 ? '#c98a2d' : 'var(--err)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px" class="num">${faNum(score)}</div>
+    <div><b style="font-size:14px">${t('seo_score')}</b><div style="font-size:12px;color:var(--muted)">${score >= 80 ? (LANG === 'fa' ? 'وضعیت خوب — فقط محتوا را تازه نگه دارید' : 'Good — keep content fresh') : (LANG === 'fa' ? 'با دکمهٔ زیر موارد ناقص کامل می‌شوند' : 'Use the button below to complete items')}</div></div>
+  </div>
+  <div style="margin-top:16px;display:grid;gap:8px">${checks.map(c => `<div style="display:flex;gap:8px;align-items:center;font-size:12.5px"><span style="width:20px;height:20px;border-radius:50%;background:${c[0] ? 'rgba(63,143,107,.15)' : 'rgba(201,90,90,.15)'};color:${c[0] ? '#3f8f6b' : '#c95a5a'};display:flex;align-items:center;justify-content:center;font-size:11px;flex:none">${c[0] ? '✓' : '!'}</span>${c[1]}</div>`).join('')}</div>
+  <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button class="btn rose" onclick="seoAuto()">${IC.star} ${t('seo_auto')}</button><button class="btn outline" onclick="render()">${t('seo_recheck')}</button></div>
+  </div>`, 'seo');
+}
+async function seoAuto() {
+  const st = S.settings;
+  if (!st.seo || !(L(st.seo.title) || '').trim() || !(L(st.seo.desc) || '').trim()) {
+    await API.put('/settings', { seo: { title: { fa: (st.brand.fa || 'روزا') + ' | فروشگاه زیورآلات و اکسسوری', en: (st.brand.en || 'ROSA') + ' | Jewelry & Accessories' }, desc: { fa: 'خرید آنلاین زیورآلات و اکسسوری با طراحی مینیمال؛ گردنبند، گوشواره، انگشتر و دستبند با ضمانت کیفیت و ارسال سریع.', en: 'Shop minimal jewelry & accessories online — necklaces, earrings, rings and bracelets with quality guarantee and fast shipping.' } } });
+  }
+  const prods = S.prodsCache || (S.prodsCache = await API.get('/products?limit=200'));
+  const cats = S.catsCache || (S.catsCache = await API.get('/categories'));
+  let fixed = 0;
+  for (const p of prods) {
+    const seo = p.seo || { title: { fa: '', en: '' }, desc: { fa: '', en: '' } };
+    const cat = cats.find(c => c.id === p.categoryId);
+    const need = !seo.title.fa || !seo.title.en || !seo.desc.fa || !seo.desc.en;
+    if (!need) continue;
+    seo.title = { fa: seo.title.fa || (p.name.fa + ' | ' + st.brand.fa), en: seo.title.en || (p.name.en + ' | ' + st.brand.en) };
+    seo.desc = {
+      fa: seo.desc.fa || `خرید ${p.name.fa}${cat ? ' از دستهٔ ' + cat.name.fa : ''}؛ ${ (p.desc.fa || '').slice(0, 110) || 'طراحی مینیمال، ضمانت کیفیت و ارسال سریع سراسری.' }`,
+      en: seo.desc.en || `Buy ${p.name.en}${cat ? ' in ' + cat.name.en : ''} — ${(p.desc.en || '').slice(0, 110) || 'minimal design, quality guarantee and fast shipping.'}`
+    };
+    await API.put('/products/' + p.id, { seo });
+    fixed++;
+  }
+  S.prodsCache = null;
+  toast(t('seo_done') + (fixed ? ' · ' + faNum(fixed) : ''));
+  render();
+}
+
 /* ---- settings ---- */
 async function aSettings() {
   const st = S.settings;
@@ -305,6 +392,8 @@ async function adminRoute(parts) {
   if (a === 'orders') return aOrders();
   if (a === 'customers') return aCustomers();
   if (a === 'coupons') return aCoupons();
+  if (a === 'payments') return aPayments();
+  if (a === 'seo') return aSeo();
   if (a === 'content') return aContent();
   if (a === 'settings') return aSettings();
   return aDash();

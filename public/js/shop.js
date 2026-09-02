@@ -1,14 +1,29 @@
 /* ROSA storefront pages */
-function setMeta(title, desc) {
+function setMeta(title, desc, opts) {
+  opts = opts || {};
   document.title = title;
   let m = document.querySelector('meta[name="description"]'); if (!m) { m = document.createElement('meta'); m.name = 'description'; document.head.appendChild(m); }
   if (desc) m.content = desc;
+  const up = (attr, key, val) => { let x = document.querySelector(`meta[${attr}="${key}"]`); if (!x) { x = document.createElement('meta'); x.setAttribute(attr, key); document.head.appendChild(x); } x.content = val || ''; };
+  const base = location.origin;
+  up('property', 'og:title', title); up('property', 'og:description', desc || ''); up('property', 'og:type', opts.type || 'website');
+  up('property', 'og:site_name', L(S.settings.brand)); up('property', 'og:url', base + '/' + (location.hash || '#/'));
+  up('property', 'og:image', base + (opts.image || S.settings.logoUrl));
+  up('name', 'twitter:card', 'summary_large_image'); up('name', 'twitter:title', title); up('name', 'twitter:description', desc || '');
+  let c = document.querySelector('link[rel="canonical"]'); if (!c) { c = document.createElement('link'); c.rel = 'canonical'; document.head.appendChild(c); }
+  c.href = base + '/' + (location.hash || '#/');
+  let j = document.getElementById('jsonld-page'); if (!j) { j = document.createElement('script'); j.type = 'application/ld+json'; j.id = 'jsonld-page'; document.head.appendChild(j); }
+  j.textContent = JSON.stringify(opts.jsonld || {});
 }
+const crumbsLD = parts => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: parts.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p[0], item: location.origin + '/' + p[1] })) });
 const secHead = (eye, title, more) => `<div class="shead"><div class="t"><div class="eyebrow">${eye}</div><h2>${title}</h2></div>${more ? `<a class="more" href="${more[1]}">${more[0]} ${arrEnd()}</a>` : ''}</div>`;
 
 /* ---------------- HOME ---------------- */
 async function pageHome() {
-  setMeta(L(S.settings.seo.title), L(S.settings.seo.desc));
+  setMeta(L(S.settings.seo.title), L(S.settings.seo.desc), { jsonld: { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'WebSite', name: L(S.settings.brand), url: location.origin + '/', potentialAction: { '@type': 'SearchAction', target: location.origin + '/#/shop?q={search_term_string}', 'query-input': 'required name=search_term_string' } },
+    { '@type': 'Organization', name: L(S.settings.brand), url: location.origin + '/', logo: location.origin + S.settings.logoUrl, sameAs: [S.settings.socials.instagram, S.settings.socials.telegram].filter(Boolean) }
+  ] } });
   const [cats, nw, best, sale] = await Promise.all([
     API.get('/categories'),
     API.get('/products?filter=new&limit=8'), API.get('/products?sort=best&limit=8'), API.get('/products?filter=sale&limit=8')
@@ -72,7 +87,7 @@ async function pageHome() {
 
 /* ---------------- SHOP ---------------- */
 async function pageShop(q) {
-  setMeta(t('shop') + ' | ' + L(S.settings.brand), L(S.settings.seo.desc));
+  setMeta(t('shop') + ' | ' + L(S.settings.brand), L(S.settings.seo.desc), { jsonld: crumbsLD([[t('home'), '#/'], [t('shop'), '#/shop']]) });
   const cats = S.cats.length ? S.cats : await API.get('/categories'); S.cats = cats;
   const cat = q.get('cat') || '', filter = q.get('filter') || '', sort = q.get('sort') || 'new', search = q.get('q') || '';
   const params = new URLSearchParams(); if (cat) params.set('cat', cat); if (filter) params.set('filter', filter); if (search) params.set('q', search); params.set('sort', sort);
@@ -100,8 +115,12 @@ async function pageProduct(slug) {
   const p = await API.get('/products/' + slug).catch(() => null);
   if (!p) return `<div class="container empty">${IC.box}<p>${t('notfound')}</p></div>`;
   S.prods[p.id] = p;
-  setMeta(L(p.seo.title), L(p.seo.desc));
   const cat = (S.cats || []).find(c => c.id === p.categoryId);
+  setMeta(L(p.seo.title), L(p.seo.desc), { type: 'product', image: p.images[0], jsonld: { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'Product', name: L(p.name), image: p.images.map(i => location.origin + i), description: L(p.seo.desc), sku: p.id, brand: { '@type': 'Brand', name: L(S.settings.brand) },
+      offers: { '@type': 'Offer', priceCurrency: 'IRT', price: Math.round(p.price * (1 - (p.discount || 0) / 100)), availability: p.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock', url: location.origin + '/#/product/' + p.slug } },
+    crumbsLD([[t('home'), '#/'], [t('shop'), '#/shop'], ...(cat ? [[L(cat.name), '#/category/' + cat.slug]] : []), [L(p.name), '#/product/' + p.slug]])
+  ] } });
   const rel = await API.get('/products?cat=' + (cat ? cat.slug : '') + '&limit=4');
   const avg = p.reviews.length ? Math.round(p.reviews.reduce((s, r) => s + r.rating, 0) / p.reviews.length) : 0;
   return `<div class="container" style="padding-bottom:60px">
@@ -197,7 +216,9 @@ let CO = { coupon: null, receiptUrl: '' };
 function pageCheckout() {
   setMeta(t('co_title') + ' | ' + L(S.settings.brand));
   if (!S.cart.length) return `<div class="container empty">${IC.bag}<h2>${t('empty_cart')}</h2><a class="btn rose" style="margin-top:16px" href="#/shop">${t('continue_shop')}</a></div>`;
-  CO = { coupon: null, receiptUrl: '', method: 'gateway' };
+  const PAY = S.settings.payment || {};
+  const gwOn = PAY.gatewayEnabled !== false, c2cOn = PAY.c2cEnabled !== false;
+  CO = { coupon: null, receiptUrl: '', method: gwOn ? 'gateway' : 'card' };
   const { subtotal, shipping } = cartCalc();
   return `<div class="container" style="padding-bottom:70px"><div class="page-head"><div class="crumbs"><a href="#/cart">${t('cart_title')}</a> / <span>${t('co_title')}</span></div><h1>${t('co_title')}</h1></div>
   <div class="split">
@@ -218,11 +239,11 @@ function pageCheckout() {
       <div class="card" style="margin-top:18px">
         <h3 style="margin-bottom:16px">${t('pay_method')}</h3>
         <div class="vopt" id="v-pay">
-          <button class="on" onclick="payPick('gateway',this)">${IC.card} ${t('pay_gateway')}</button>
-          <button onclick="payPick('card',this)">${IC.card} ${t('pay_card')}</button>
+          ${gwOn ? `<button class="${CO.method === 'gateway' ? 'on' : ''}" onclick="payPick('gateway',this)">${IC.card} ${t('pay_gateway')}</button>` : ''}
+          ${c2cOn ? `<button class="${CO.method === 'card' ? 'on' : ''}" onclick="payPick('card',this)">${IC.card} ${t('pay_card')}</button>` : ''}
         </div>
-        <div id="cardbox" class="hidden" style="margin-top:16px">
-          <p style="font-size:12.5px;color:var(--muted);background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:14px">${t('card_notice')}</p>
+        <div id="cardbox" class="${CO.method === 'card' ? '' : 'hidden'}" style="margin-top:16px">
+          <p style="font-size:12.5px;color:var(--muted);background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:14px">${(PAY.c2cNote && L(PAY.c2cNote)) ? esc(L(PAY.c2cNote)) : t('card_notice')}${PAY.cardHolder && L(PAY.cardHolder) ? ' · ' + esc(t('holder_fa')) + ': ' + esc(L(PAY.cardHolder)) : ''}</p>
           <div class="field"><label class="f">${t('card_number')}</label><div class="inp num" dir="ltr" style="text-align:center;font-weight:800;letter-spacing:.06em">${S.settings.payment.cardNumber} <button class="copy-btn" onclick="copyTxt('${S.settings.payment.cardNumber.replace(/-/g, '')}')">کپی</button></div></div>
           <div class="field"><label class="f">${t('sheba')}</label><div class="inp num" dir="ltr" style="text-align:center;font-size:12px">${S.settings.payment.sheba}</div></div>
           <div class="formgrid">

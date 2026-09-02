@@ -17,7 +17,7 @@ function make() {
     },
     socials: { instagram: 'https://instagram.com/rosa.jewelry', telegram: 'https://t.me/rosa_jewelry', whatsapp: 'https://wa.me/989120000000', pinterest: 'https://pinterest.com/rosajewelry' },
     shipping: { cost: 45000, freeMin: 2500000 },
-    payment: { gatewayEnabled: true, gatewayName: 'زرین‌پال', merchantId: '', cardNumber: '6037-9975-1234-5678', sheba: 'IR82 0170 0000 0000 0000 0000 0001', cardHolder: { fa: 'فروشگاه روزا', en: 'ROSA Store' } },
+    payment: { gatewayEnabled: true, c2cEnabled: true, provider: 'zarinpal', token: '', gatewayName: 'زرین‌پال', merchantId: '', cardNumber: '6037-9975-1234-5678', sheba: 'IR82 0170 0000 0000 0000 0000 0001', cardHolder: { fa: 'فروشگاه روزا', en: 'ROSA Store' }, c2cNote: { fa: '', en: '' } },
     seo: { title: { fa: 'روزا | فروشگاه زیورآلات و اکسسوری', en: 'ROSA | Jewelry & Accessories' }, desc: { fa: 'خرید آنلاین زیورآلات و اکسسوری با طراحی مینیمال؛ گردنبند، گوشواره، انگشتر و دستبند با ضمانت کیفیت و ارسال سریع.', en: 'Shop minimal jewelry & accessories online — necklaces, earrings, rings and bracelets with quality guarantee and fast shipping.' } },
     footerAbout: { fa: 'روزا از سال ۱۳۹۸ با یک ایده ساده متولد شد: زیورآلاتی که هر روز قابل پوشیدن باشند، بی‌ادعا بدرخشند و خاطره شوند. هر قطعه روزا با وسواس انتخاب می‌شود و با ضمانت کیفیت به دست شما می‌رسد.', en: 'Born in 2019 with one simple idea: jewelry you can wear every day — quiet, radiant, memorable. Every ROSA piece is carefully curated and delivered with a quality guarantee.' },
     defaultLang: 'fa',
