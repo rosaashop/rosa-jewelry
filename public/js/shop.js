@@ -20,7 +20,7 @@ async function pageHome() {
   return `
   <div class="container hero-wrap"><div class="hero hero-video" id="hero">
     <video autoplay muted loop playsinline preload="auto">
-      <source src="assets/video/hero.mp4" type="video/mp4">
+      <source src="assets/video/hero.mp4?v=20" type="video/mp4">
     </video>
     <div class="veil"></div>
     <div class="copy">
