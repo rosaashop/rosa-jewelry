@@ -3,8 +3,8 @@ function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const d = x => Ma
 function applyVars() {
   const c = S.settings.colors, r = document.documentElement.style;
   r.setProperty('--accent', c.accent); r.setProperty('--accent-dk', shade(c.accent, .82)); r.setProperty('--soft', c.soft); r.setProperty('--blush', c.blush); r.setProperty('--ink', c.ink);
-  const sl = S.settings.slider || {};
-  r.setProperty('--hero-h', (sl.h || 270) + 'px'); r.setProperty('--hero-hm', (sl.hm || 380) + 'px');
+  const hv = S.settings.hero || {};
+  r.setProperty('--hero-h', (hv.h || 460) + 'px'); r.setProperty('--hero-hm', (hv.hm || 500) + 'px');
   let f = document.querySelector('link[rel="icon"]'); if (!f) { f = document.createElement('link'); f.rel = 'icon'; document.head.appendChild(f); } f.href = S.settings.favicon;
 }
 async function boot() {
@@ -21,7 +21,6 @@ async function render() {
   const parts = pathPart.split('/').filter(Boolean);
   const q = new URLSearchParams(queryPart || '');
   const app = document.getElementById('app');
-  clearInterval(slideT);
   if (S.settings.maintenance && parts[0] !== 'admin' && !(S.user && S.user.role === 'admin')) {
     app.innerHTML = `<div class="maint"><div><img src="${S.settings.logoUrl}" style="height:90px;margin:0 auto 20px;mix-blend-mode:multiply"><h1>${t('maint_title')}</h1><p style="color:var(--muted)">${t('maint_desc')}</p></div></div>`;
     return;
@@ -53,7 +52,8 @@ async function render() {
   app.innerHTML = headerHTML() + html + footerHTML();
   const navMap = { '': 'home', shop: 'shop', category: 'shop', product: 'shop', about: 'about', contact: 'contact' };
   const on = navMap[r]; if (on) { const a = document.querySelector(`nav.main a[data-nav="${on}"]`); if (a) a.classList.add('on'); }
-  if (document.querySelector('#hero .slide')) slideGo(0);
+  const hv = document.querySelector('#hero.hero-video');
+  if (hv) requestAnimationFrame(() => requestAnimationFrame(() => hv.classList.add('go')));
   if (document.getElementById('pg-key')) pgLoad();
   window.scrollTo(0, 0);
 }

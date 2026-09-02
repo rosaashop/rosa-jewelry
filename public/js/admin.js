@@ -1,5 +1,5 @@
 /* ROSA admin panel */
-const A_SECTIONS = [['', 'dash', 'chart'], ['products', 'products', 'box'], ['categories', 'categories_m', 'pin'], ['orders', 'orders_m', 'truck'], ['customers', 'customers', 'user'], ['coupons', 'coupons', 'card'], ['sliders', 'sliders_m', 'file'], ['content', 'content', 'edit'], ['settings', 'settings_m', 'set']];
+const A_SECTIONS = [['', 'dash', 'chart'], ['products', 'products', 'box'], ['categories', 'categories_m', 'pin'], ['orders', 'orders_m', 'truck'], ['customers', 'customers', 'user'], ['coupons', 'coupons', 'card'], ['content', 'content', 'edit'], ['settings', 'settings_m', 'set']];
 function adminShell(inner, on) {
   return `<div class="admin"><aside class="side">
     <div class="brand"><img src="${S.settings.logoUrl}"><b style="color:#fff">${esc(L(S.settings.brand))}</b></div>
@@ -171,31 +171,6 @@ async function cpSave(id) {
   modalClose(); render();
 }
 
-/* ---- sliders ---- */
-async function aSliders() {
-  const list = await API.get('/sliders?all=1');
-  return adminShell(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h1 style="margin:0">${t('sliders_m')}</h1><button class="btn rose sm" onclick="slEdit(null)">${IC.plus} ${t('add')}</button></div>
-  <table class="tbl"><tr><th></th><th>${t('title_fa')}</th><th>${t('order_f')}</th><th>${t('status')}</th><th></th></tr>
-  ${list.map(s => `<tr><td><img class="th" src="${s.image}" style="width:70px;height:44px"></td><td>${esc(s.title.fa)}</td><td class="num">${faNum(s.order)}</td><td>${s.active ? t('active') : t('inactive')}</td><td><div class="rowact"><button class="ibtn" onclick="slEdit('${s.id}')">${IC.edit}</button><button class="ibtn danger" onclick="delItem('sliders','${s.id}')">${IC.trash}</button></div></td></tr>`).join('')}</table>`, 'sliders');
-}
-function slEdit(id) {
-  modalOpen(`<h2 style="margin-bottom:16px">${t('sliders_m')}</h2><div class="formgrid">
-  <div class="field"><label class="f">${t('title_fa')}</label><input class="inp" id="sl-tf"></div>
-  <div class="field"><label class="f">${t('title_en')}</label><input class="inp" id="sl-te"></div>
-  <div class="field"><label class="f">${t('sub_fa')}</label><input class="inp" id="sl-sf"></div>
-  <div class="field"><label class="f">${t('sub_en')}</label><input class="inp" id="sl-se"></div>
-  <div class="field"><label class="f">${t('image_url')}</label><input class="inp" id="sl-im" dir="ltr"></div>
-  <div class="field"><label class="f">${t('link')}</label><input class="inp" id="sl-li" dir="ltr" value="#/shop"></div>
-  <div class="field"><label class="f">${t('order_f')}</label><input class="inp num" id="sl-or" value="1"></div>
-  <div class="field"><label class="f"><input type="checkbox" id="sl-ac" checked> ${t('active')}</label></div></div>
-  <input type="file" accept="image/*" style="font-size:12px" onchange="fileToData(this,async d=>{const r=await API.post('/upload',{data:d});document.getElementById('sl-im').value=r.url;})">
-  <div style="margin-top:14px"><button class="btn rose" onclick="slSave('${id || ''}')">${t('save')}</button></div>`);
-}
-async function slSave(id) {
-  const body = { title: { fa: document.getElementById('sl-tf').value, en: document.getElementById('sl-te').value }, subtitle: { fa: document.getElementById('sl-sf').value, en: document.getElementById('sl-se').value }, image: document.getElementById('sl-im').value, link: document.getElementById('sl-li').value, order: +document.getElementById('sl-or').value || 1, active: document.getElementById('sl-ac').checked };
-  id ? await API.put('/sliders/' + id, body) : await API.post('/sliders', body);
-  modalClose(); render();
-}
 
 /* ---- content: reviews / faqs / pages ---- */
 async function aContent() {
@@ -246,14 +221,16 @@ async function aSettings() {
     </div>
     <input type="file" accept="image/*" style="font-size:12px" onchange="fileToData(this,async d=>{const r=await API.post('/upload',{data:d});document.getElementById('st-logo').value=r.url;})">
   </div>
-  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('sliders_m')}</b>
+  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('hero_m')}</b>
     <div class="formgrid" style="margin-top:12px">
-      <div class="field"><label class="f">${t('sl_h')}</label><input class="inp num" id="st-slh" value="${(st.slider || {}).h || 250}"></div>
-      <div class="field"><label class="f">${t('sl_hm')}</label><input class="inp num" id="st-slm" value="${(st.slider || {}).hm || 320}"></div>
-      <div class="field"><label class="f"><input type="checkbox" id="st-sls" ${(st.slider || {}).sub === false ? '' : 'checked'}> ${t('sl_sub')}</label></div>
-      <div class="field"><label class="f">${t('sl_style')}</label><select class="sel" id="st-sly"><option value="card" ${(st.slider || {}).style !== 'product' ? 'selected' : ''}>${t('sl_style_card')}</option><option value="product" ${(st.slider || {}).style === 'product' ? 'selected' : ''}>${t('sl_style_product')}</option></select></div>
+      <div class="field"><label class="f">${t('hero_title_f')} (فا)</label><input class="inp" id="st-htf" value="${esc(((st.hero || {}).title || {}).fa || '')}"></div>
+      <div class="field"><label class="f">${t('hero_title_f')} (EN)</label><input class="inp" id="st-hte" value="${esc(((st.hero || {}).title || {}).en || '')}"></div>
+      <div class="field"><label class="f">${t('hero_sub_f')} (فا)</label><input class="inp" id="st-hsf" value="${esc(((st.hero || {}).sub || {}).fa || '')}"></div>
+      <div class="field"><label class="f">${t('hero_sub_f')} (EN)</label><input class="inp" id="st-hse" value="${esc(((st.hero || {}).sub || {}).en || '')}"></div>
+      <div class="field"><label class="f">${t('hero_h')}</label><input class="inp num" id="st-hh" value="${(st.hero || {}).h || 460}"></div>
+      <div class="field"><label class="f">${t('hero_hm')}</label><input class="inp num" id="st-hhm" value="${(st.hero || {}).hm || 500}"></div>
     </div>
-    <p style="font-size:11.5px;color:var(--muted)">${t('sl_hint')}</p>
+    <p style="font-size:11.5px;color:var(--muted)">${t('hero_hint')}</p>
   </div>
   <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('colors_f2')} & ${t('default_lang')}</b>
     <div class="formgrid" style="margin-top:12px">
@@ -305,7 +282,7 @@ async function stSave() {
     brand: { fa: g('st-bfa'), en: g('st-ben') }, logoUrl: g('st-logo'), favicon: g('st-fav'),
     announcement: { fa: g('st-anfa'), en: g('st-anen') },
     colors: { accent: g('st-c1'), soft: g('st-c2'), blush: g('st-c3'), ink: g('st-c4') },
-    slider: { h: +g('st-slh') || 270, hm: +g('st-slm') || 380, sub: document.getElementById('st-sls').checked, style: document.getElementById('st-sly').value },
+    hero: { title: { fa: g('st-htf'), en: g('st-hte') }, sub: { fa: g('st-hsf'), en: g('st-hse') }, h: +g('st-hh') || 460, hm: +g('st-hhm') || 500 },
     defaultLang: g('st-lang'), maintenance: document.getElementById('st-maint').checked,
     contact: Object.assign({}, S.settings.contact, { phone: g('st-ph'), mobile: g('st-mob'), email: g('st-em'), address: { fa: g('st-adfa'), en: S.settings.contact.address.en } }),
     socials: Object.assign({}, S.settings.socials, { instagram: g('st-so1'), telegram: g('st-so2'), whatsapp: g('st-so3') }),
@@ -328,7 +305,6 @@ async function adminRoute(parts) {
   if (a === 'orders') return aOrders();
   if (a === 'customers') return aCustomers();
   if (a === 'coupons') return aCoupons();
-  if (a === 'sliders') return aSliders();
   if (a === 'content') return aContent();
   if (a === 'settings') return aSettings();
   return aDash();

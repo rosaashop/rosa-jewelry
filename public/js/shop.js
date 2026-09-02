@@ -9,29 +9,26 @@ const secHead = (eye, title, more) => `<div class="shead"><div class="t"><div cl
 /* ---------------- HOME ---------------- */
 async function pageHome() {
   setMeta(L(S.settings.seo.title), L(S.settings.seo.desc));
-  const slStyle = (S.settings.slider || {}).style || 'card';
-  const [sliders, cats, nw, best, sale] = await Promise.all([
-    API.get('/sliders'), API.get('/categories'),
+  const [cats, nw, best, sale] = await Promise.all([
+    API.get('/categories'),
     API.get('/products?filter=new&limit=8'), API.get('/products?sort=best&limit=8'), API.get('/products?filter=sale&limit=8')
   ]);
   S.cats = cats;
-  const arrPrevIc = LANG === 'fa' ? IC.arrR : IC.arrL, arrNextIc = LANG === 'fa' ? IC.arrL : IC.arrR;
+  const H = S.settings.hero || {};
+  const hTitle = H.title ? L(H.title) : (LANG === 'fa' ? 'ظرافتی که هر روز می‌درخشد' : 'Quiet elegance, every day');
+  const hSub = H.sub ? L(H.sub) : (LANG === 'fa' ? 'جواهرهای دست‌سازِ روزا، برای لحظه‌هایی که باید دیده شوند' : 'Handcrafted ROSA pieces, for the moments meant to be seen');
   return `
-  <div class="container hero-wrap"><div class="hero" id="hero">
-    ${sliders.map((s, i) => {
-      const p = slStyle === 'product' ? (best.find(x => x.id === s.productId) || best[i]) : null;
-      return `<div class="slide ${i === 0 ? 'on' : ''}">
-      ${p ? `<div class="txt"><div class="eyebrow">${t('best_eye')} · ${esc(L(S.settings.brand))}</div><h1>${esc(L(p.name))}</h1>
-        <div class="prices" style="display:flex;align-items:center;gap:8px;margin-bottom:12px">${priceHTML(p)}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn rose" onclick="addToCart('${p.id}')">${IC.bag} ${t('add_cart')}</button>
-          <a class="btn outline" href="#/product/${p.slug}">${t('view')}</a>
-        </div></div>`
-      : `<div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>`}
-      <div class="img ${p ? 'prod' : ''}"><img src="${p ? p.images[0] : s.image}" alt="${esc(L(p ? p.name : s.title))}"></div>
-    </div>`; }).join('')}
-    <div class="dots">${sliders.map((s, i) => `<button class="${i === 0 ? 'on' : ''}" onclick="slideGo(${i})"></button>`).join('')}</div>
-    ${sliders.length > 1 ? `<button class="arr prev" onclick="slideGo(W.slide-1)">${arrPrevIc}</button><button class="arr next" onclick="slideGo(W.slide+1)">${arrNextIc}</button>` : ''}
+  <div class="container hero-wrap"><div class="hero hero-video" id="hero">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/img/sliders/b1.jpg">
+      <source src="assets/video/hero.mp4" type="video/mp4">
+    </video>
+    <div class="veil"></div>
+    <div class="copy">
+      <div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div>
+      <h1>${esc(hTitle)}</h1>
+      <p>${esc(hSub)}</p>
+      <div class="cta"><a class="btn rose" href="#/shop">${t('shop_now')}</a><a class="btn outline" href="#/shop?filter=new">${t('new_title')}</a></div>
+    </div>
   </div></div>
   <section class="blk"><div class="container">
     ${secHead(t('cats_eye'), t('cats_title'))}
@@ -71,16 +68,6 @@ async function pageHome() {
       <div class="benefit">${IC.head}<b>${t('b4t')}</b><span>${t('b4d')}</span></div>
     </div>
   </div></section>`;
-}
-let slideT;
-window.W = { slide: 0 };
-function slideGo(i) {
-  const slides = document.querySelectorAll('#hero .slide'), dots = document.querySelectorAll('#hero .dots button');
-  if (!slides.length) return;
-  W.slide = (i + slides.length) % slides.length;
-  slides.forEach((s, k) => s.classList.toggle('on', k === W.slide));
-  dots.forEach((d, k) => d.classList.toggle('on', k === W.slide));
-  clearInterval(slideT); slideT = setInterval(() => slideGo(W.slide + 1), 6000);
 }
 
 /* ---------------- SHOP ---------------- */

@@ -22,7 +22,7 @@ function make() {
     footerAbout: { fa: 'روزا از سال ۱۳۹۸ با یک ایده ساده متولد شد: زیورآلاتی که هر روز قابل پوشیدن باشند، بی‌ادعا بدرخشند و خاطره شوند. هر قطعه روزا با وسواس انتخاب می‌شود و با ضمانت کیفیت به دست شما می‌رسد.', en: 'Born in 2019 with one simple idea: jewelry you can wear every day — quiet, radiant, memorable. Every ROSA piece is carefully curated and delivered with a quality guarantee.' },
     defaultLang: 'fa',
     maintenance: false,
-    slider: { h: 270, hm: 380, sub: true, style: 'card' },
+    hero: { h: 460, hm: 500, title: { fa: 'ظرافتی که هر روز می‌درخشد', en: 'Quiet elegance, every day' }, sub: { fa: 'جواهرهای دست‌سازِ روزا، برای لحظه‌هایی که باید دیده شوند', en: 'Handcrafted ROSA pieces, for the moments meant to be seen' } },
     announcement: { fa: 'ارسال رایگان برای خرید بالای ۲٬۵۰۰٬۰۰ تومان', en: 'Free shipping on orders over 2,500,000 Toman' }
   };
 
