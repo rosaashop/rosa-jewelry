@@ -140,9 +140,9 @@ section.blk.alt { background: var(--bg-soft); }
 .pcard .wish { position: absolute; top: 10px; inset-inline-end: 10px; width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.08); color: #9b938e; transition: .2s; }
 .pcard .wish.on, .pcard .wish:hover { color: var(--accent); }
 .pcard .wish.on .ic { fill: var(--accent); stroke: var(--accent); }
-.pcard .qadd { position: absolute; bottom: 10px; inset-inline-end: 10px; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.18); transition: .2s; }
+.pcard .qadd { margin-inline-start: auto; flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,.14); transition: .2s; }
 .pcard .qadd:hover { background: var(--accent); transform: translateY(-2px); }
-.pcard .qadd .ic { width: 17px; height: 17px; }
+.pcard .qadd .ic { width: 16px; height: 16px; }
 .pcard .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .pcard .cat-name { font-size: 11px; color: var(--muted); }
 .pcard h3 { font-size: 14px; font-weight: 700; line-height: 1.7; }

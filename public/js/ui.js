@@ -119,12 +119,11 @@ function cardHTML(p) {
     <div class="im"><a href="#/product/${p.slug}"><img loading="lazy" src="${p.images[0]}" alt="${esc(L(p.name))}"></a>
       <div class="bgs">${p.discount > 0 ? `<span class="badge sale num">${faNum(p.discount)}${LANG === 'fa' ? '٪' : '%'}</span>` : ''}${p.isNew ? `<span class="badge new">${t('new_eye')}</span>` : ''}</div>
       <button class="wish ${wished ? 'on' : ''}" onclick="toggleWish('${p.id}',this)" aria-label="wishlist">${IC.heart}</button>
-      <button class="qadd" onclick="addToCart('${p.id}')" aria-label="add to cart" title="${t('add_cart')}">${IC.bag}</button>
     </div>
     <div class="body">
       <span class="cat-name">${cat ? esc(L(cat.name)) : ''}</span>
       <h3><a href="#/product/${p.slug}">${esc(L(p.name))}</a></h3>
-      <div class="prices">${priceHTML(p)}</div>
+      <div class="prices">${priceHTML(p)}<button class="qadd" onclick="addToCart('${p.id}')" aria-label="add to cart" title="${t('add_cart')}">${IC.bag}</button></div>
     </div>
   </div>`;
 }
