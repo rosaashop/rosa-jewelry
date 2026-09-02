@@ -99,9 +99,25 @@ html[dir="rtl"] .mnav .panel { transform: translateX(100%); }
 .hero .img img { width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 13px; }
 .hero .img.prod { background: var(--soft); display: flex; align-items: center; justify-content: center; }
 .hero .img.prod img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; }
+/* quiet-luxury motion */
+.hero .slide.on .img img { animation: kenburns 7s ease-out forwards; }
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.07); } }
+.hero .slide .txt > * { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+.hero .slide.on .txt > * { opacity: 1; transform: none; }
+.hero .slide.on .txt > *:nth-child(1) { transition-delay: .15s; }
+.hero .slide.on .txt > *:nth-child(2) { transition-delay: .3s; }
+.hero .slide.on .txt > *:nth-child(3) { transition-delay: .45s; }
+.hero .slide.on .txt > *:nth-child(4) { transition-delay: .6s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero .slide.on .img img { animation: none; }
+  .hero .slide .txt > * { transition: none; opacity: 1; transform: none; }
+  .hero .dots button.on::after { animation: none; width: 100%; }
+}
 .hero .dots { position: absolute; bottom: 14px; inset-inline-start: 36px; display: flex; gap: 7px; z-index: 5; }
-.hero .dots button { width: 22px; height: 3px; border-radius: 99px; background: #e2d8d3; transition: .3s; }
-.hero .dots button.on { background: var(--accent); width: 34px; }
+.hero .dots button { position: relative; width: 22px; height: 3px; border-radius: 99px; background: #e6dbd6; transition: .3s; overflow: hidden; }
+.hero .dots button.on { width: 40px; }
+.hero .dots button.on::after { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; width: 0; background: var(--accent); border-radius: 99px; animation: dotfill 6s linear forwards; }
+@keyframes dotfill { to { width: 100%; } }
 .hero .arr { position: absolute; top: 50%; transform: translateY(-50%); z-index: 5; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
 .hero .arr .ic { width: 17px; height: 17px; }
 .hero .arr.prev { inset-inline-start: 22px; } .hero .arr.next { inset-inline-end: 22px; }
