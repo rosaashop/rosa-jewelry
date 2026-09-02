@@ -6,3 +6,4 @@ uploads/
 package.json
 package-lock.json
 .npm/
+.cache/
