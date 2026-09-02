@@ -4,6 +4,7 @@ const IC = {
   user: '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>',
   heart: '<svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.2-9C1.2 7.6 3 4.5 6.4 4.5c2 0 3.6 1.1 4.6 2.8 1-1.7 2.6-2.8 4.6-2.8 3.4 0 5.2 3.1 3.6 6.5C17 15.4 12 20 12 20z"/></svg>',
   bag: '<svg class="ic" viewBox="0 0 24 24"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+  cart: '<svg class="ic" viewBox="0 0 24 24"><circle cx="9.5" cy="20" r="1.5"/><circle cx="17.5" cy="20" r="1.5"/><path d="M3 4h2.3l2.3 11.2h10.3L20.5 7.5H6.4"/></svg>',
   menu: '<svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
   star: '<svg class="ic" viewBox="0 0 24 24"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.3 1.2 6.1L12 17l-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></svg>',
   truck: '<svg class="ic" viewBox="0 0 24 24"><path d="M1 5h13v11H1zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
@@ -123,7 +124,7 @@ function cardHTML(p) {
     <div class="body">
       <span class="cat-name">${cat ? esc(L(cat.name)) : ''}</span>
       <h3><a href="#/product/${p.slug}">${esc(L(p.name))}</a></h3>
-      <div class="prices">${priceHTML(p)}<button class="qadd" onclick="addToCart('${p.id}')" aria-label="add to cart" title="${t('add_cart')}">${IC.bag}</button></div>
+      <div class="prices">${priceHTML(p)}<button class="qadd" onclick="addToCart('${p.id}')" aria-label="add to cart" title="${t('add_cart')}">${IC.cart}</button></div>
     </div>
   </div>`;
 }
