@@ -86,9 +86,9 @@ html[dir="rtl"] .mnav .panel { transform: translateX(100%); }
 .mnav .panel a.mlink { display: block; padding: 12px 4px; font-weight: 600; border-bottom: 1px solid var(--line); }
 
 /* ============ hero slider ============ */
-.hero { position: relative; overflow: hidden; background: var(--soft); }
+.hero { position: relative; overflow: hidden; background: var(--soft); height: 250px; }
 .hero .slide { position: absolute; inset: 0; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; opacity: 0; transition: opacity .8s ease; pointer-events: none; }
-.hero .slide.on { opacity: 1; pointer-events: auto; position: relative; }
+.hero .slide.on { opacity: 1; pointer-events: auto; }
 .hero .txt { padding: 18px 32px; }
 .hero .txt .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .18em; color: var(--accent-dk); text-transform: uppercase; margin-bottom: 6px; }
 .hero .txt h1 { font-size: clamp(16px, 1.9vw, 22px); font-weight: 800; line-height: 1.5; margin-bottom: 4px; }
