@@ -140,6 +140,9 @@ section.blk.alt { background: var(--bg-soft); }
 .pcard .wish { position: absolute; top: 10px; inset-inline-end: 10px; width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.08); color: #9b938e; transition: .2s; }
 .pcard .wish.on, .pcard .wish:hover { color: var(--accent); }
 .pcard .wish.on .ic { fill: var(--accent); stroke: var(--accent); }
+.pcard .qadd { position: absolute; bottom: 10px; inset-inline-end: 10px; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.18); transition: .2s; }
+.pcard .qadd:hover { background: var(--accent); transform: translateY(-2px); }
+.pcard .qadd .ic { width: 17px; height: 17px; }
 .pcard .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .pcard .cat-name { font-size: 11px; color: var(--muted); }
 .pcard h3 { font-size: 14px; font-weight: 700; line-height: 1.7; }
@@ -263,7 +266,11 @@ footer.site .bottom { border-top: 1px solid #3d3633; padding: 18px 0; font-size:
 .admin { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; background: var(--bg-soft); }
 .admin .side { background: var(--ink); color: #cfc6c1; padding: 22px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
 .admin .side .brand { display: flex; align-items: center; gap: 10px; padding: 0 20px 20px; border-bottom: 1px solid #3d3633; margin-bottom: 14px; }
-.admin .side .brand img { height: 46px; mix-blend-mode: multiply; background: #fff; border-radius: 8px; padding: 2px 8px; }
+.admin .side .brand img { height: 54px; mix-blend-mode: multiply; background: #fff; border-radius: 10px; padding: 4px 10px; }
+.admin .side .side-user { margin-top: 18px; padding: 14px 16px 0; border-top: 1px solid #3d3633; display: grid; gap: 8px; }
+.admin .side .side-user button { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border-radius: 10px; background: #352e2b; color: #e8e0db; font-size: 12.5px; font-weight: 600; }
+.admin .side .side-user button:hover { background: #403834; }
+.admin .side .side-user .ic { width: 16px; height: 16px; }
 .admin .side a { display: flex; gap: 10px; align-items: center; padding: 10px 22px; font-size: 13px; font-weight: 600; opacity: .8; border-inline-start: 3px solid transparent; }
 .admin .side a:hover { opacity: 1; background: #352e2b; }
 .admin .side a.on { opacity: 1; background: #352e2b; border-color: var(--accent); color: #fff; }
@@ -330,6 +337,8 @@ html[dir="ltr"] #toast.show { transform: translateX(-50%) translateY(0); }
   .admin { grid-template-columns: 1fr; }
   .admin .side { position: static; height: auto; display: flex; overflow-x: auto; padding: 10px; }
   .admin .side .brand { display: none; }
+  .admin .side .side-user { display: flex; margin: 0; padding: 0 10px; border-top: 0; }
+  .admin .side .side-user button { white-space: nowrap; }
   .admin .side a { white-space: nowrap; border-inline-start: 0; border-bottom: 3px solid transparent; }
   .stats { grid-template-columns: repeat(2, 1fr); }
 }

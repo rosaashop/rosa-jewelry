@@ -5,7 +5,26 @@ function adminShell(inner, on) {
     <div class="brand"><img src="${S.settings.logoUrl}"><b style="color:#fff">${esc(L(S.settings.brand))}</b></div>
     ${A_SECTIONS.map(([k, lbl, ic]) => `<a href="#/admin${k ? '/' + k : ''}" class="${on === k ? 'on' : ''}">${IC[ic]} ${t(lbl)}</a>`).join('')}
     <a href="#/" >${IC.home} ${t('home')}</a>
+    <div class="side-user">
+      <button onclick="pwModal()">${IC.edit} ${t('change_pass')}</button>
+      <button onclick="logout()">${IC.x} ${t('exit_admin')}</button>
+    </div>
   </aside><main class="main">${inner}</main></div>`;
+}
+function pwModal() {
+  modalOpen(`<h2 style="margin-bottom:16px">${t('change_pass')}</h2><div class="formgrid">
+  <div class="field"><label class="f">${t('cur_pass')}</label><input class="inp" type="password" id="pw-cur" dir="ltr"></div>
+  <div class="field"><label class="f">${t('new_pass')}</label><input class="inp" type="password" id="pw-new" dir="ltr"></div>
+  <div class="field" style="grid-column:1/-1"><label class="f">${t('new_pass2')}</label><input class="inp" type="password" id="pw-new2" dir="ltr"></div></div>
+  <div style="margin-top:14px"><button class="btn rose" onclick="pwSave()">${t('save')}</button></div>`);
+}
+async function pwSave() {
+  const cur = document.getElementById('pw-cur').value, nw = document.getElementById('pw-new').value, nw2 = document.getElementById('pw-new2').value;
+  if (nw.length < 4) return toast('✕ ' + t('new_pass'));
+  if (nw !== nw2) return toast('✕ ' + t('pass_mismatch'));
+  try { await API.post('/auth/login', { phone: S.user.phone, password: cur }); } catch (e) { return toast('✕ ' + t('cur_pass')); }
+  await API.put('/me', { password: nw });
+  modalClose(); toast('✓ ' + t('pass_changed'));
 }
 function adminGuard() { if (!S.user || S.user.role !== 'admin') { location.hash = '#/login'; return false; } return true; }
 
@@ -340,15 +359,12 @@ async function aSettings() {
       <div class="field"><label class="f">WhatsApp</label><input class="inp" id="st-so3" value="${st.socials.whatsapp}" dir="ltr"></div>
     </div>
   </div>
-  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('shipping')} & ${t('gateway_f')} & ${t('card2card')}</b>
+  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('shipping')}</b>
     <div class="formgrid" style="margin-top:12px">
       <div class="field"><label class="f">${t('shipping_cost')}</label><input class="inp num" id="st-shc" value="${st.shipping.cost}"></div>
       <div class="field"><label class="f">${t('free_min')}</label><input class="inp num" id="st-shf" value="${st.shipping.freeMin}"></div>
-      <div class="field"><label class="f">${t('gateway_name')}</label><input class="inp" id="st-gn" value="${esc(st.payment.gatewayName)}"></div>
-      <div class="field"><label class="f">${t('merchant_id')}</label><input class="inp num" id="st-gm" value="${st.payment.merchantId}" dir="ltr"></div>
-      <div class="field"><label class="f">${t('card_no')}</label><input class="inp num" id="st-cn" value="${st.payment.cardNumber}" dir="ltr"></div>
-      <div class="field"><label class="f">${t('sheba_f')}</label><input class="inp num" id="st-sh" value="${st.payment.sheba}" dir="ltr"></div>
     </div>
+    <p style="font-size:11.5px;color:var(--muted);margin-top:10px">${LANG === 'fa' ? 'تنظیمات کارت‌به‌کارت و درگاه بانکی به بخش «پرداخت و درگاه بانکی» منتقل شد.' : 'Card-to-card & gateway settings moved to “Payments & bank gateway”.'}</p>
   </div>
   <div class="card" style="margin-bottom:16px"><b style="font-size:13px">SEO</b>
     <div class="formgrid" style="margin-top:12px">
@@ -374,7 +390,6 @@ async function stSave() {
     contact: Object.assign({}, S.settings.contact, { phone: g('st-ph'), mobile: g('st-mob'), email: g('st-em'), address: { fa: g('st-adfa'), en: S.settings.contact.address.en } }),
     socials: Object.assign({}, S.settings.socials, { instagram: g('st-so1'), telegram: g('st-so2'), whatsapp: g('st-so3') }),
     shipping: { cost: +g('st-shc') || 0, freeMin: +g('st-shf') || 0 },
-    payment: Object.assign({}, S.settings.payment, { gatewayName: g('st-gn'), merchantId: g('st-gm'), cardNumber: g('st-cn'), sheba: g('st-sh') }),
     seo: { title: { fa: g('st-tf'), en: g('st-te') }, desc: { fa: g('st-df'), en: S.settings.seo.desc.en } },
     footerAbout: { fa: g('st-fa2'), en: g('st-fe2') }
   };
