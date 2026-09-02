@@ -28,7 +28,7 @@ async function pageHome() {
           <a class="btn outline" href="#/product/${p.slug}">${t('view')}</a>
         </div></div>`
       : `<div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>`}
-      <div class="img"><img src="${s.image}" alt="${esc(L(s.title))}"></div>
+      <div class="img ${p ? 'prod' : ''}"><img src="${p ? p.images[0] : s.image}" alt="${esc(L(p ? p.name : s.title))}"></div>
     </div>`; }).join('')}
     <div class="dots">${sliders.map((s, i) => `<button class="${i === 0 ? 'on' : ''}" onclick="slideGo(${i})"></button>`).join('')}</div>
     ${sliders.length > 1 ? `<button class="arr prev" onclick="slideGo(W.slide-1)">${arrPrevIc}</button><button class="arr next" onclick="slideGo(W.slide+1)">${arrNextIc}</button>` : ''}
