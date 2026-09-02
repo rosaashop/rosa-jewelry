@@ -9,19 +9,29 @@ const secHead = (eye, title, more) => `<div class="shead"><div class="t"><div cl
 /* ---------------- HOME ---------------- */
 async function pageHome() {
   setMeta(L(S.settings.seo.title), L(S.settings.seo.desc));
+  const slStyle = (S.settings.slider || {}).style || 'card';
   const [sliders, cats, nw, best, sale] = await Promise.all([
     API.get('/sliders'), API.get('/categories'),
     API.get('/products?filter=new&limit=8'), API.get('/products?sort=best&limit=8'), API.get('/products?filter=sale&limit=8')
   ]);
   S.cats = cats;
+  const arrPrevIc = LANG === 'fa' ? IC.arrR : IC.arrL, arrNextIc = LANG === 'fa' ? IC.arrL : IC.arrR;
   return `
   <div class="container hero-wrap"><div class="hero" id="hero">
-    ${sliders.map((s, i) => `<div class="slide ${i === 0 ? 'on' : ''}">
-      <div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>
+    ${sliders.map((s, i) => {
+      const p = slStyle === 'product' ? (best.find(x => x.id === s.productId) || best[i]) : null;
+      return `<div class="slide ${i === 0 ? 'on' : ''}">
+      ${p ? `<div class="txt"><div class="eyebrow">${t('best_eye')} · ${esc(L(S.settings.brand))}</div><h1>${esc(L(p.name))}</h1>
+        <div class="prices" style="display:flex;align-items:center;gap:8px;margin-bottom:12px">${priceHTML(p)}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn rose" onclick="addToCart('${p.id}')">${IC.bag} ${t('add_cart')}</button>
+          <a class="btn outline" href="#/product/${p.slug}">${t('view')}</a>
+        </div></div>`
+      : `<div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>`}
       <div class="img"><img src="${s.image}" alt="${esc(L(s.title))}"></div>
-    </div>`).join('')}
+    </div>`; }).join('')}
     <div class="dots">${sliders.map((s, i) => `<button class="${i === 0 ? 'on' : ''}" onclick="slideGo(${i})"></button>`).join('')}</div>
-    ${sliders.length > 1 ? `<button class="arr prev" onclick="slideGo(W.slide-1)">${IC.arrL}</button><button class="arr next" onclick="slideGo(W.slide+1)">${IC.arrR}</button>` : ''}
+    ${sliders.length > 1 ? `<button class="arr prev" onclick="slideGo(W.slide-1)">${arrPrevIc}</button><button class="arr next" onclick="slideGo(W.slide+1)">${arrNextIc}</button>` : ''}
   </div></div>
   <section class="blk"><div class="container">
     ${secHead(t('cats_eye'), t('cats_title'))}

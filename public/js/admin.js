@@ -251,6 +251,7 @@ async function aSettings() {
       <div class="field"><label class="f">${t('sl_h')}</label><input class="inp num" id="st-slh" value="${(st.slider || {}).h || 250}"></div>
       <div class="field"><label class="f">${t('sl_hm')}</label><input class="inp num" id="st-slm" value="${(st.slider || {}).hm || 320}"></div>
       <div class="field"><label class="f"><input type="checkbox" id="st-sls" ${(st.slider || {}).sub === false ? '' : 'checked'}> ${t('sl_sub')}</label></div>
+      <div class="field"><label class="f">${t('sl_style')}</label><select class="sel" id="st-sly"><option value="card" ${(st.slider || {}).style !== 'product' ? 'selected' : ''}>${t('sl_style_card')}</option><option value="product" ${(st.slider || {}).style === 'product' ? 'selected' : ''}>${t('sl_style_product')}</option></select></div>
     </div>
     <p style="font-size:11.5px;color:var(--muted)">${t('sl_hint')}</p>
   </div>
@@ -304,7 +305,7 @@ async function stSave() {
     brand: { fa: g('st-bfa'), en: g('st-ben') }, logoUrl: g('st-logo'), favicon: g('st-fav'),
     announcement: { fa: g('st-anfa'), en: g('st-anen') },
     colors: { accent: g('st-c1'), soft: g('st-c2'), blush: g('st-c3'), ink: g('st-c4') },
-    slider: { h: +g('st-slh') || 250, hm: +g('st-slm') || 320, sub: document.getElementById('st-sls').checked },
+    slider: { h: +g('st-slh') || 270, hm: +g('st-slm') || 380, sub: document.getElementById('st-sls').checked, style: document.getElementById('st-sly').value },
     defaultLang: g('st-lang'), maintenance: document.getElementById('st-maint').checked,
     contact: Object.assign({}, S.settings.contact, { phone: g('st-ph'), mobile: g('st-mob'), email: g('st-em'), address: { fa: g('st-adfa'), en: S.settings.contact.address.en } }),
     socials: Object.assign({}, S.settings.socials, { instagram: g('st-so1'), telegram: g('st-so2'), whatsapp: g('st-so3') }),
