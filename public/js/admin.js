@@ -246,6 +246,14 @@ async function aSettings() {
     </div>
     <input type="file" accept="image/*" style="font-size:12px" onchange="fileToData(this,async d=>{const r=await API.post('/upload',{data:d});document.getElementById('st-logo').value=r.url;})">
   </div>
+  <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('sliders_m')}</b>
+    <div class="formgrid" style="margin-top:12px">
+      <div class="field"><label class="f">${t('sl_h')}</label><input class="inp num" id="st-slh" value="${(st.slider || {}).h || 250}"></div>
+      <div class="field"><label class="f">${t('sl_hm')}</label><input class="inp num" id="st-slm" value="${(st.slider || {}).hm || 320}"></div>
+      <div class="field"><label class="f"><input type="checkbox" id="st-sls" ${(st.slider || {}).sub === false ? '' : 'checked'}> ${t('sl_sub')}</label></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted)">${t('sl_hint')}</p>
+  </div>
   <div class="card" style="margin-bottom:16px"><b style="font-size:13px">${t('colors_f2')} & ${t('default_lang')}</b>
     <div class="formgrid" style="margin-top:12px">
       <div class="field"><label class="f">Accent</label><input class="inp" id="st-c1" type="color" value="${st.colors.accent}" style="height:44px"></div>
@@ -296,6 +304,7 @@ async function stSave() {
     brand: { fa: g('st-bfa'), en: g('st-ben') }, logoUrl: g('st-logo'), favicon: g('st-fav'),
     announcement: { fa: g('st-anfa'), en: g('st-anen') },
     colors: { accent: g('st-c1'), soft: g('st-c2'), blush: g('st-c3'), ink: g('st-c4') },
+    slider: { h: +g('st-slh') || 250, hm: +g('st-slm') || 320, sub: document.getElementById('st-sls').checked },
     defaultLang: g('st-lang'), maintenance: document.getElementById('st-maint').checked,
     contact: Object.assign({}, S.settings.contact, { phone: g('st-ph'), mobile: g('st-mob'), email: g('st-em'), address: { fa: g('st-adfa'), en: S.settings.contact.address.en } }),
     socials: Object.assign({}, S.settings.socials, { instagram: g('st-so1'), telegram: g('st-so2'), whatsapp: g('st-so3') }),

@@ -22,6 +22,7 @@ function make() {
     footerAbout: { fa: 'روزا از سال ۱۳۹۸ با یک ایده ساده متولد شد: زیورآلاتی که هر روز قابل پوشیدن باشند، بی‌ادعا بدرخشند و خاطره شوند. هر قطعه روزا با وسواس انتخاب می‌شود و با ضمانت کیفیت به دست شما می‌رسد.', en: 'Born in 2019 with one simple idea: jewelry you can wear every day — quiet, radiant, memorable. Every ROSA piece is carefully curated and delivered with a quality guarantee.' },
     defaultLang: 'fa',
     maintenance: false,
+    slider: { h: 250, hm: 320, sub: true },
     announcement: { fa: 'ارسال رایگان برای خرید بالای ۲٬۵۰۰٬۰۰ تومان', en: 'Free shipping on orders over 2,500,000 Toman' }
   };
 
@@ -156,9 +157,9 @@ function make() {
   ];
 
   const sliders = [
-    { id: 'sl1', image: '/assets/img/sliders/sl1.jpg', title: { fa: 'کالکشن جدید مروارید', en: 'The New Pearl Edit' }, subtitle: { fa: 'ظرافتی که هر روز می‌درخشد؛ قطعه‌هایی مینیمال برای درخشش همیشگی شما', en: 'Quiet elegance that shines every day — minimal pieces, made for you.' }, link: '#/shop?filter=new', order: 1, active: true },
-    { id: 'sl2', image: '/assets/img/sliders/sl2.jpg', title: { fa: 'تا ۲۰٪ تخفیف ویژه', en: 'Up to 20% Off' }, subtitle: { fa: 'جشنواره پاییزه روزا؛ انتخاب‌های محبوب با قیمت‌های بهتر', en: 'ROSA autumn edit — beloved pieces at kinder prices.' }, link: '#/shop?filter=sale', order: 2, active: true },
-    { id: 'sl3', image: '/assets/img/sliders/sl3.jpg', title: { fa: 'امضای روزا', en: 'The ROSA Signature' }, subtitle: { fa: 'ضمانت کیفیت، ارسال سریع و بسته‌بندی هدیه برای همه سفارش‌ها', en: 'Quality guarantee, fast shipping and gift packaging on every order.' }, link: '#/about', order: 3, active: true }
+    { id: 'sl1', image: '/assets/img/sliders/sl1.jpg', title: { fa: 'کالکشن جدید مروارید', en: 'The New Pearl Edit' }, subtitle: { fa: 'ظرافتی که هر روز می‌درخشد', en: 'Quiet elegance, every day' }, link: '#/shop?filter=new', order: 1, active: true },
+    { id: 'sl2', image: '/assets/img/sliders/sl2.jpg', title: { fa: 'تا ۲۰٪ تخفیف ویژه', en: 'Up to 20% Off' }, subtitle: { fa: 'جشنواره پاییزه؛ انتخاب‌های محبوب', en: 'Autumn edit, kinder prices' }, link: '#/shop?filter=sale', order: 2, active: true },
+    { id: 'sl3', image: '/assets/img/sliders/sl3.jpg', title: { fa: 'امضای روزا', en: 'The ROSA Signature' }, subtitle: { fa: 'ضمانت کیفیت و ارسال سریع سراسری', en: 'Quality guarantee, fast shipping' }, link: '#/about', order: 3, active: true }
   ];
 
   const faqs = [

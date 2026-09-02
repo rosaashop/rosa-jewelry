@@ -17,7 +17,7 @@ async function pageHome() {
   return `
   <div class="hero" id="hero">
     ${sliders.map((s, i) => `<div class="slide ${i === 0 ? 'on' : ''}">
-      <div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1><p>${esc(L(s.subtitle))}</p><a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>
+      <div class="txt"><div class="eyebrow">${esc(L(S.settings.brand))} · ${esc(L(S.settings.tagline))}</div><h1>${esc(L(s.title))}</h1>${(S.settings.slider || {}).sub === false ? '' : `<p>${esc(L(s.subtitle))}</p>`}<a class="btn rose" href="${s.link}">${t('shop_now')}</a></div>
       <div class="img"><img src="${s.image}" alt="${esc(L(s.title))}"></div>
     </div>`).join('')}
     <div class="dots">${sliders.map((s, i) => `<button class="${i === 0 ? 'on' : ''}" onclick="slideGo(${i})"></button>`).join('')}</div>

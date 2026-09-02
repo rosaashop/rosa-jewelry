@@ -3,6 +3,8 @@ function shade(hex, f) { const n = parseInt(hex.slice(1), 16); const d = x => Ma
 function applyVars() {
   const c = S.settings.colors, r = document.documentElement.style;
   r.setProperty('--accent', c.accent); r.setProperty('--accent-dk', shade(c.accent, .82)); r.setProperty('--soft', c.soft); r.setProperty('--blush', c.blush); r.setProperty('--ink', c.ink);
+  const sl = S.settings.slider || {};
+  r.setProperty('--hero-h', (sl.h || 250) + 'px'); r.setProperty('--hero-hm', (sl.hm || 320) + 'px');
   let f = document.querySelector('link[rel="icon"]'); if (!f) { f = document.createElement('link'); f.rel = 'icon'; document.head.appendChild(f); } f.href = S.settings.favicon;
 }
 async function boot() {
