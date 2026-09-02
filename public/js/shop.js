@@ -19,7 +19,7 @@ async function pageHome() {
   const hSub = H.sub ? L(H.sub) : (LANG === 'fa' ? 'جواهرهای دست‌سازِ روزا، برای لحظه‌هایی که باید دیده شوند' : 'Handcrafted ROSA pieces, for the moments meant to be seen');
   return `
   <div class="container hero-wrap"><div class="hero hero-video" id="hero">
-    <video autoplay muted loop playsinline preload="metadata" poster="assets/img/sliders/b1.jpg">
+    <video autoplay muted loop playsinline preload="auto">
       <source src="assets/video/hero.mp4" type="video/mp4">
     </video>
     <div class="veil"></div>

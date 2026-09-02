@@ -53,7 +53,16 @@ async function render() {
   const navMap = { '': 'home', shop: 'shop', category: 'shop', product: 'shop', about: 'about', contact: 'contact' };
   const on = navMap[r]; if (on) { const a = document.querySelector(`nav.main a[data-nav="${on}"]`); if (a) a.classList.add('on'); }
   const hv = document.querySelector('#hero.hero-video');
-  if (hv) requestAnimationFrame(() => requestAnimationFrame(() => hv.classList.add('go')));
+  if (hv) {
+    requestAnimationFrame(() => requestAnimationFrame(() => hv.classList.add('go')));
+    const v = hv.querySelector('video');
+    if (v) {
+      const ready = () => hv.classList.add('ready');
+      if (v.readyState >= 2) ready(); else v.addEventListener('loadeddata', ready, { once: true });
+      if (v.play) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+      setTimeout(ready, 3500);
+    }
+  }
   if (document.getElementById('pg-key')) pgLoad();
   window.scrollTo(0, 0);
 }
